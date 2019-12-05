@@ -1,3 +1,20 @@
+# Stock Valuation App
+
+The key to success in the stock market is to know the value of a company that
+you want to invest in. Here's an app that will help you in estimating the 
+intrinsic value of listed companies.
+
+We will be exploring different methods of estimating the intrinsic value as we
+progress in building this app. The methods include:-
+
+* Price-Earnings multiple
+
+May you be hit with the torrents of income and returns in your investments!!!
+
+## Libraries used
+
+* material-ui
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
