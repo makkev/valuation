@@ -7,6 +7,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import PriceEarningMultipleVal from './PriceEarningMultipleVal';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -44,8 +45,8 @@ const rows = [
 
 
 export default function PriceEarningMultipleCalc(props) {
-  const [valIn5, setValIn5] = useState(0)
-  const [presentVal, setPresentVal] = useState(0)
+  const [valIn5, setValIn5] = useState(0);
+  const [presentVal, setPresentVal] = useState(0);
   const [val, setVal] = useState([]);
 
 
@@ -82,15 +83,27 @@ export default function PriceEarningMultipleCalc(props) {
       return val;
     }
     setVal(calc());
-  }, []);
+  }, [
+    eps,
+    medianHistPE, 
+    conservGrowthRt, 
+    growthDeclineRt,
+    discountRt,
+  ]);
 
   useEffect(() => {
     if (val[4] !== undefined) {
       setValIn5(val[4].val * medianHistPE);
       setPresentVal((val[4].val * medianHistPE) / ((1 + discountRt) ** 5))
     }
-  });
+  }, [val, medianHistPE, discountRt]);
   
+  useEffect(() => {
+    props.setInputs( prevInputs => ({
+      ...prevInputs,
+      conservGrowthRt: expectGrowthRate * (1 - marginSafety),
+    }));
+  }, [expectGrowthRate, marginSafety]);
 
   console.log('val: ', val);
   console.log('valIn5: ', valIn5);
@@ -99,6 +112,7 @@ export default function PriceEarningMultipleCalc(props) {
   return (
     <div className={classes.root}>
     {/* <div> */}
+      <PriceEarningMultipleVal presentVal={presentVal} />
       <Paper className={classes.mainPaper}>
         <Typography component="p">
           Calculation
@@ -122,10 +136,10 @@ export default function PriceEarningMultipleCalc(props) {
           </Table>
         </Paper>
         <Typography component="p">
-          {`Value in 5 years: ${valIn5} `}
+          {`Value in 5 years: ${valIn5.toFixed(2)} `}
         </Typography>
         <Typography component="p">
-          {`Present value: ${presentVal}`}
+          {`Present value: ${presentVal.toFixed(2)}`}
         </Typography>
       </Paper>
     </div>

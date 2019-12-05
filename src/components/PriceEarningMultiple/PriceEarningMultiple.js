@@ -51,8 +51,8 @@ function PriceEarningMultiple() {
         />
         <PriceEarningMultipleCalc
           inputs={inputs}
+          setInputs={setInputs}
         />
-
       </Grid>
     </div>
   );

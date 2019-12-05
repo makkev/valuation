@@ -123,9 +123,10 @@ function PriceEarningMultipleInputs(props) {
         {/* Conservative growth rate */}
         <div>
           <TextField
+            disabled
             id="standard-number"
             label="Conservative growth rate"
-            value={inputs.conservGrowthRt}
+            value={inputs.conservGrowthRt.toFixed(2)}
             name="conservGrowthRt"
             onChange={handleChange}
             type="number"
@@ -134,6 +135,7 @@ function PriceEarningMultipleInputs(props) {
               shrink: true,
             }}
             margin="normal"
+            variant="filled"
           />
         </div>
 
