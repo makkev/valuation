@@ -7,9 +7,11 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import PropTypes from 'prop-types';
 import PriceEarningMultipleVal from './PriceEarningMultipleVal';
 
-const useStyles = makeStyles(theme => ({
+
+const useStyles = makeStyles((theme) => ({
   root: {
     width: '40%',
   },
@@ -28,21 +30,8 @@ const useStyles = makeStyles(theme => ({
   table: {
     minWidth: 100,
   },
-  yearCol: { width: '5%'}
+  yearCol: { width: '5%' },
 }));
-
-function createData(year, val) {
-  return { year, val };
-}
-
-const rows = [
-  createData( 1, 123.00),
-  createData( 2, 123.00),
-  createData( 3, 123.00),
-  createData( 4, 123.00),
-  createData( 5, 123.00),
-];
-
 
 export default function PriceEarningMultipleCalc(props) {
   const [valIn5, setValIn5] = useState(0);
@@ -50,43 +39,40 @@ export default function PriceEarningMultipleCalc(props) {
   const [val, setVal] = useState([]);
 
 
-
-
-
   const classes = useStyles();
 
-  const { inputs: {
-    eps,
-    medianHistPE,
-    expectGrowthRate,
-    marginSafety,
-    conservGrowthRt,
-    growthDeclineRt,
-    discountRt,
-  } } = props;
-
+  const {
+    inputs: {
+      eps,
+      medianHistPE,
+      expectGrowthRate,
+      marginSafety,
+      conservGrowthRt,
+      growthDeclineRt,
+      discountRt,
+    },
+  } = props;
 
 
   useEffect(() => {
     const calc = () => {
-      let val = [];
+      const calcVal = [];
       let v = 0;
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 5; i += 1) {
         if (i === 0) {
-          v = (eps * (1 + conservGrowthRt)) * ((1 - growthDeclineRt) ** ((i + 1) - 1))
+          v = (eps * (1 + conservGrowthRt)) * ((1 - growthDeclineRt) ** ((i + 1) - 1));
+        } else {
+          v = calcVal[i - 1].val * ((1 + (conservGrowthRt * ((1 - growthDeclineRt) ** ((i - 1))))));
         }
-        else {
-          v = val[i - 1].val * ((1 + (conservGrowthRt * ((1 - growthDeclineRt) ** ((i - 1))))))
-        }
-        val.push({ year: i + 1, val: v.toFixed(2)})
+        calcVal.push({ year: i + 1, val: v.toFixed(2) });
       }
-      return val;
-    }
+      return calcVal;
+    };
     setVal(calc());
   }, [
     eps,
-    medianHistPE, 
-    conservGrowthRt, 
+    medianHistPE,
+    conservGrowthRt,
     growthDeclineRt,
     discountRt,
   ]);
@@ -94,12 +80,12 @@ export default function PriceEarningMultipleCalc(props) {
   useEffect(() => {
     if (val[4] !== undefined) {
       setValIn5(val[4].val * medianHistPE);
-      setPresentVal((val[4].val * medianHistPE) / ((1 + discountRt) ** 5))
+      setPresentVal((val[4].val * medianHistPE) / ((1 + discountRt) ** 5));
     }
   }, [val, medianHistPE, discountRt]);
-  
+
   useEffect(() => {
-    props.setInputs( prevInputs => ({
+    props.setInputs((prevInputs) => ({
       ...prevInputs,
       conservGrowthRt: expectGrowthRate * (1 - marginSafety),
     }));
@@ -111,7 +97,7 @@ export default function PriceEarningMultipleCalc(props) {
 
   return (
     <div className={classes.root}>
-    {/* <div> */}
+      {/* <div> */}
       <PriceEarningMultipleVal presentVal={presentVal} />
       <Paper className={classes.mainPaper}>
         <Typography component="p">
@@ -126,7 +112,7 @@ export default function PriceEarningMultipleCalc(props) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {val.map(v => (
+              {val.map((v) => (
                 <TableRow key={v.year}>
                   <TableCell align="right">{v.year}</TableCell>
                   <TableCell align="right">{v.val}</TableCell>
@@ -145,3 +131,16 @@ export default function PriceEarningMultipleCalc(props) {
     </div>
   );
 }
+
+PriceEarningMultipleCalc.propTypes = {
+  inputs: PropTypes.shape({
+    eps: PropTypes.number.isRequired,
+    medianHistPE: PropTypes.number.isRequired,
+    expectGrowthRate: PropTypes.number.isRequired,
+    marginSafety: PropTypes.number.isRequired,
+    conservGrowthRt: PropTypes.number.isRequired,
+    growthDeclineRt: PropTypes.number.isRequired,
+    discountRt: PropTypes.number.isRequired,
+  }).isRequired,
+  setInputs: PropTypes.func.isRequired,
+};

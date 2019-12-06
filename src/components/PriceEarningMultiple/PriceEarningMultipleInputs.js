@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
+import PropTypes from 'prop-types';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   priceEarningSec: {
     padding: theme.spacing(1, 2, 3),
     marginTop: theme.spacing(1),
@@ -30,17 +31,15 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function PriceEarningMultipleInputs(props) {
-
-  const handleChange = e => {
+  const handleChange = (e) => {
     console.log('e: ', e);
     const { target: { value, name } } = e;
 
-    props.setInputs( prevInputs => ({
+    props.setInputs((prevInputs) => ({
       ...prevInputs,
-      [name]: value === '' ? '' : Number(value)
+      [name]: value === '' ? '' : Number(value),
     }));
-
-  }
+  };
 
   const classes = useStyles();
   const { inputs } = props;
@@ -173,9 +172,21 @@ function PriceEarningMultipleInputs(props) {
           />
         </div>
       </Paper>
-      
     </div>
   );
 }
+
+PriceEarningMultipleInputs.propTypes = {
+  inputs: PropTypes.shape({
+    eps: PropTypes.number.isRequired,
+    medianHistPE: PropTypes.number.isRequired,
+    expectGrowthRate: PropTypes.number.isRequired,
+    marginSafety: PropTypes.number.isRequired,
+    conservGrowthRt: PropTypes.number.isRequired,
+    growthDeclineRt: PropTypes.number.isRequired,
+    discountRt: PropTypes.number.isRequired,
+  }).isRequired,
+  setInputs: PropTypes.func.isRequired,
+};
 
 export default PriceEarningMultipleInputs;

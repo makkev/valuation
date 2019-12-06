@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
 import PriceEarningMultipleInputs from './PriceEarningMultipleInputs';
 import PriceEarningMultipleCalc from './PriceEarningMultipleCalc';
-import Grid from '@material-ui/core/Grid';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
@@ -16,7 +14,7 @@ const useStyles = makeStyles(theme => ({
   },
   body: {
     marginLeft: theme.spacing(3),
-  }
+  },
 }));
 
 
@@ -45,7 +43,7 @@ function PriceEarningMultiple() {
         alignItems="flex-start"
         className={classes.body}
       >
-        <PriceEarningMultipleInputs 
+        <PriceEarningMultipleInputs
           inputs={inputs}
           setInputs={setInputs}
         />

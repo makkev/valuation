@@ -2,9 +2,9 @@ import React from 'react';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import { white } from 'ansi-colors';
+import PropTypes from 'prop-types';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: '40%',
   },
@@ -33,5 +33,9 @@ function PriceEarningMultipleVal(props) {
     </div>
   );
 }
+
+PriceEarningMultipleVal.propTypes = {
+  presentVal: PropTypes.number.isRequired,
+};
 
 export default PriceEarningMultipleVal;
