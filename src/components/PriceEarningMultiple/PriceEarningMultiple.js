@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import { useSelector } from 'react-redux';
 import PriceEarningMultipleInputs from './PriceEarningMultipleInputs';
 import PriceEarningMultipleCalc from './PriceEarningMultipleCalc';
 
@@ -20,6 +21,9 @@ const useStyles = makeStyles((theme) => ({
 
 function PriceEarningMultiple() {
   const classes = useStyles();
+
+  const inputFromRedux = useSelector((state) => state.priceEarningMultiple.inputs);
+  console.log('inputFromRedux:', inputFromRedux);
 
   const [inputs, setInputs] = useState({
     eps: 13.97,

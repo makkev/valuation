@@ -51,6 +51,7 @@ export default function PriceEarningMultipleCalc(props) {
       growthDeclineRt,
       discountRt,
     },
+    setInputs,
   } = props;
 
 
@@ -85,11 +86,11 @@ export default function PriceEarningMultipleCalc(props) {
   }, [val, medianHistPE, discountRt]);
 
   useEffect(() => {
-    props.setInputs((prevInputs) => ({
+    setInputs((prevInputs) => ({
       ...prevInputs,
       conservGrowthRt: expectGrowthRate * (1 - marginSafety),
     }));
-  }, [expectGrowthRate, marginSafety]);
+  }, [expectGrowthRate, marginSafety, setInputs]);
 
   console.log('val: ', val);
   console.log('valIn5: ', valIn5);
