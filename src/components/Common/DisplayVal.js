@@ -13,15 +13,15 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2, 2, 2, 2),
     minWidth: '80%',
     display: 'flex',
-    backgroundColor: '#3f50b5',
-    // backgroundColor: '#ffc600',
-    color: 'white',
+    // backgroundColor: '#3f50b5',
+    backgroundColor: '#ffc600',
+    color: 'black',
 
     // boxSizing: 'border-box',
   },
 }));
 
-function PriceEarningMultipleVal(props) {
+function DisplayVal(props) {
   const { presentVal } = props;
   const classes = useStyles();
   return (
@@ -35,8 +35,8 @@ function PriceEarningMultipleVal(props) {
   );
 }
 
-PriceEarningMultipleVal.propTypes = {
+DisplayVal.propTypes = {
   presentVal: PropTypes.number.isRequired,
 };
 
-export default PriceEarningMultipleVal;
+export default DisplayVal;

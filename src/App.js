@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import rootReducer from './rootReducer';
-import PriceEarningMultiple from './components/PriceEarningMultiple/PriceEarningMultiple';
+import Home from './components/Home/Home';
 
 const store = createStore(
   rootReducer,
@@ -15,7 +15,7 @@ function App() {
   return (
     <Provider store={store}>
       <div className="App">
-        <PriceEarningMultiple />
+        <Home />
       </div>
     </Provider>
   );
