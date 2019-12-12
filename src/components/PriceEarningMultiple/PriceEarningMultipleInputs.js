@@ -34,11 +34,13 @@ function PriceEarningMultipleInputs(props) {
   const handleChange = (e) => {
     console.log('e: ', e);
     const { target: { value, name } } = e;
+    const { setInputs } = props;
 
-    props.setInputs((prevInputs) => ({
-      ...prevInputs,
-      [name]: value === '' ? '' : Number(value),
-    }));
+    // setInputs((prevInputs) => ({
+    //   ...prevInputs,
+    //   [name]: value === '' ? '' : Number(value),
+    // }));
+    setInputs(name, value);
   };
 
   const classes = useStyles();

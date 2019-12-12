@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import PriceEarningMultipleInputs from './PriceEarningMultipleInputs';
 import PriceEarningMultipleCalc from './PriceEarningMultipleCalc';
+import { setInput } from './actions';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,19 +22,22 @@ const useStyles = makeStyles((theme) => ({
 
 function PriceEarningMultiple() {
   const classes = useStyles();
+  const inputs = useSelector((state) => state.priceEarningMultiple.inputs);
+  const dispatch = useDispatch();
 
-  const inputFromRedux = useSelector((state) => state.priceEarningMultiple.inputs);
-  console.log('inputFromRedux:', inputFromRedux);
+  const setInputs = (name, value) => {
+    dispatch(setInput(name, value));
+  };
 
-  const [inputs, setInputs] = useState({
-    eps: 13.97,
-    medianHistPE: 18.00,
-    expectGrowthRate: 0.2,
-    marginSafety: 0.25,
-    conservGrowthRt: 0.15,
-    growthDeclineRt: 0.05,
-    discountRt: 0.09,
-  });
+  // const [inputs, setInputs] = useState({
+  //   eps: 13.97,
+  //   medianHistPE: 18.00,
+  //   expectGrowthRate: 0.2,
+  //   marginSafety: 0.25,
+  //   conservGrowthRt: 0.15,
+  //   growthDeclineRt: 0.05,
+  //   discountRt: 0.09,
+  // });
 
   return (
     <div className={classes.root}>
