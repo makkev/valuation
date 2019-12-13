@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function DCFCalc(props) {
-  const [valIn5, setValIn5] = useState(0);
+  const [valIn5, setValIn10] = useState(0);
   const [presentVal, setPresentVal] = useState(0);
   const [FCFval, setFCFVal] = useState([]);
 
@@ -43,18 +43,18 @@ export default function DCFCalc(props) {
 
   const {
     inputs: {
-      totalCash,
-      totalDebt,
+      // totalCash,
+      // totalDebt,
       freeCashFlow,
-      sharesOutstanding,
+      // sharesOutstanding,
       expectedGrowthRate,
       marginOfSafety,
       conservativeGrowthRate,
       growthDeclineRate,
-      discountRate,
-      valuationLastFCF,
+      // discountRate,
+      // valuationLastFCF,
     },
-    setInputs,
+    setInput,
   } = props;
 
   useEffect(() => {
@@ -66,7 +66,7 @@ export default function DCFCalc(props) {
         if (i === 0) {
           v = freeCashFlow * (1 + conservativeGrowthRate);
         } else {
-          v = FCFval[i - 1].val
+          v = FCFval[i - 1]
             * ((1 + (conservativeGrowthRate * ((1 - growthDeclineRate) ** ((i - 1))))));
         }
         calcVal.push({ year: i + 1, val: v.toFixed(2) });
@@ -80,12 +80,15 @@ export default function DCFCalc(props) {
     growthDeclineRate,
   ]);
 
+  // useEffect(() => {
+  //   setInputs((prevInputs) => ({
+  //     ...prevInputs,
+  //     conservativeGrowthRate: expectedGrowthRate * (1 - marginOfSafety),
+  //   }));
+  // }, [expectedGrowthRate, marginOfSafety, setInputs]);
   useEffect(() => {
-    setInputs((prevInputs) => ({
-      ...prevInputs,
-      conservativeGrowthRate: expectedGrowthRate * (1 - marginOfSafety),
-    }));
-  }, [expectedGrowthRate, marginOfSafety, setInputs]);
+    setInput('conservativeGrowthRate', expectedGrowthRate * (1 - marginOfSafety));
+  }, [expectedGrowthRate, marginOfSafety]);
 
   return (
     <div className={classes.root}>
@@ -100,7 +103,8 @@ export default function DCFCalc(props) {
             <TableHead>
               <TableRow>
                 <TableCell className={classes.yearCol} align="right">Year</TableCell>
-                <TableCell align="right">EPS * Growth rate</TableCell>
+                <TableCell align="right">FCF * Growth rate</TableCell>
+                <TableCell align="right">NPV FCF</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -113,12 +117,21 @@ export default function DCFCalc(props) {
             </TableBody>
           </Table>
         </Paper>
-        <Typography component="p">
-          {`Value in 5 years: ${valIn5.toFixed(2)} `}
+        {/* <Typography component="p">
+          {`Total NPV FCF: ${valIn5.toFixed(2)} `}
         </Typography>
         <Typography component="p">
-          {`Present value: ${presentVal.toFixed(2)}`}
+          {`Year 10 FCF value: ${presentVal.toFixed(2)}`}
         </Typography>
+        <Typography component="p">
+          {`Cash on Hand: ${presentVal.toFixed(2)}`}
+        </Typography>
+        <Typography component="p">
+          {`Total Debt: ${presentVal.toFixed(2)}`}
+        </Typography>
+        <Typography component="p">
+          {`Company value: ${presentVal.toFixed(2)}`}
+        </Typography> */}
       </Paper>
     </div>
   );
@@ -137,5 +150,5 @@ DCFCalc.propTypes = {
     discountRate: PropTypes.number.isRequired,
     valuationLastFCF: PropTypes.number.isRequired,
   }).isRequired,
-  setInputs: PropTypes.func.isRequired,
+  setInput: PropTypes.func.isRequired,
 };

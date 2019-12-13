@@ -9,6 +9,8 @@ import Box from '@material-ui/core/Box';
 import PriceEarningMultiple from '../PriceEarningMultiple/PriceEarningMultiple';
 import DCF from '../DCF/DCF';
 
+const DEFAULT_TAB = 1;
+
 function TabPanel(props) {
   const {
     children, value, index, ...other
@@ -50,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SimpleTabs() {
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState(DEFAULT_TAB);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);

@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import DCFInputs from './DCFInputs';
-// import PriceEarningMultipleCalc from './PriceEarningMultipleCalc';
+import DCFCalc from './DCFCalc';
+import { setInput as setIn } from './actions';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,21 +23,25 @@ const useStyles = makeStyles((theme) => ({
 function DCF() {
   const classes = useStyles();
 
-  const inputFromRedux = useSelector((state) => state.priceEarningMultiple.inputs);
+  const inputs = useSelector((state) => state.dcf.inputs);
+  const dispatch = useDispatch();
+  const setInput = (name, value) => {
+    dispatch(setIn(name, value));
+  };
   // console.log('inputFromRedux:', inputFromRedux);
 
-  const [inputs, setInputs] = useState({
-    totalCash: 40546,
-    totalDebt: 16960,
-    freeCashFlow: 46737,
-    sharesOutstanding: 6029.67,
-    expectedGrowthRate: 0.1537,
-    marginOfSafety: 0.25,
-    conservativeGrowthRate: 0.1153,
-    growthDeclineRate: 0.05,
-    discountRate: 0.1,
-    valuationLastFCF: 12,
-  });
+  // const [inputs, setInputs] = useState({
+  //   totalCash: 40546,
+  //   totalDebt: 16960,
+  //   freeCashFlow: 46737,
+  //   sharesOutstanding: 6029.67,
+  //   expectedGrowthRate: 0.1537,
+  //   marginOfSafety: 0.25,
+  //   conservativeGrowthRate: 0.1153,
+  //   growthDeclineRate: 0.05,
+  //   discountRate: 0.1,
+  //   valuationLastFCF: 12,
+  // });
 
   return (
     <div className={classes.root}>
@@ -52,12 +57,12 @@ function DCF() {
       >
         <DCFInputs
           inputs={inputs}
-          setInputs={setInputs}
+          setInput={setInput}
         />
-        {/* <PriceEarningMultipleCalc
+        <DCFCalc
           inputs={inputs}
-          setInputs={setInputs}
-        /> */}
+          setInput={setInput}
+        />
       </Grid>
     </div>
   );

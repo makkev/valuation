@@ -34,11 +34,13 @@ function DCFInputs(props) {
   const handleChange = (e) => {
     console.log('e: ', e);
     const { target: { value, name } } = e;
+    const { setInput } = props;
 
-    props.setInputs((prevInputs) => ({
-      ...prevInputs,
-      [name]: value === '' ? '' : Number(value),
-    }));
+    // props.setInput((prevInputs) => ({
+    //   ...prevInputs,
+    //   [name]: value === '' ? '' : Number(value),
+    // }));
+    setInput(name, value);
   };
 
   const classes = useStyles();
@@ -48,7 +50,7 @@ function DCFInputs(props) {
     <div>
       <Paper className={classes.DCFClass}>
         <Typography component="p">
-          Inputs
+          inputs
         </Typography>
 
         {/* Total Cash */}
@@ -57,7 +59,7 @@ function DCFInputs(props) {
             id="standard-number"
             label="Total cash (mil)"
             value={inputs.totalCash}
-            name="eps"
+            name="totalCash"
             onChange={handleChange}
             type="number"
             className={classes.textField}
@@ -74,7 +76,7 @@ function DCFInputs(props) {
             id="standard-number"
             label="Total Debt (mil)"
             value={inputs.totalDebt}
-            name="medianHistPE"
+            name="totalDebt"
             onChange={handleChange}
             type="number"
             className={classes.textField}
@@ -91,7 +93,7 @@ function DCFInputs(props) {
             id="standard-number"
             label="Free cash flow (mil)"
             value={inputs.freeCashFlow}
-            name="medianHistPE"
+            name="freeCashFlow"
             onChange={handleChange}
             type="number"
             className={classes.textField}
@@ -108,7 +110,7 @@ function DCFInputs(props) {
             id="standard-number"
             label="Shares outstanding (mil)"
             value={inputs.sharesOutstanding}
-            name="medianHistPE"
+            name="sharesOutstanding"
             onChange={handleChange}
             type="number"
             className={classes.textField}
@@ -124,8 +126,8 @@ function DCFInputs(props) {
           <TextField
             id="standard-number"
             label="Total Debt"
-            value={inputs.expectedGrowthRate}
-            name="medianHistPE"
+            value={inputs.totalDebt}
+            name="totalDebt"
             onChange={handleChange}
             type="number"
             className={classes.textField}
@@ -140,9 +142,9 @@ function DCFInputs(props) {
         <div>
           <TextField
             id="standard-number"
-            label="Margin of Safety"
+            label="Margin Of Safety"
             value={inputs.marginOfSafety}
-            name="medianHistPE"
+            name="marginOfSafety"
             onChange={handleChange}
             type="number"
             className={classes.textField}
@@ -159,7 +161,7 @@ function DCFInputs(props) {
             id="standard-number"
             label="Conservative growth rate"
             value={inputs.conservativeGrowthRate}
-            name="medianHistPE"
+            name="conservativeGrowthRate"
             onChange={handleChange}
             type="number"
             className={classes.textField}
@@ -176,7 +178,7 @@ function DCFInputs(props) {
             id="standard-number"
             label="Growth decline rate"
             value={inputs.growthDeclineRate}
-            name="medianHistPE"
+            name="growthDeclineRate"
             onChange={handleChange}
             type="number"
             className={classes.textField}
@@ -193,7 +195,7 @@ function DCFInputs(props) {
             id="standard-number"
             label="Discount rate"
             value={inputs.discountRate}
-            name="medianHistPE"
+            name="discountRate"
             onChange={handleChange}
             type="number"
             className={classes.textField}
@@ -210,7 +212,7 @@ function DCFInputs(props) {
             id="standard-number"
             label="Valuation last FCF"
             value={inputs.valuationLastFCF}
-            name="medianHistPE"
+            name="valuationLastFCF"
             onChange={handleChange}
             type="number"
             className={classes.textField}
@@ -241,7 +243,7 @@ DCFInputs.propTypes = {
     valuationLastFCF: PropTypes.number.isRequired,
 
   }).isRequired,
-  setInputs: PropTypes.func.isRequired,
+  setInput: PropTypes.func.isRequired,
 };
 
 export default DCFInputs;
