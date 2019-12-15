@@ -32,20 +32,14 @@ const useStyles = makeStyles((theme) => ({
 
 function DCFInputs(props) {
   const handleChange = (e) => {
-    console.log('e: ', e);
     const { target: { value, name } } = e;
     const { setInput } = props;
 
-    // props.setInput((prevInputs) => ({
-    //   ...prevInputs,
-    //   [name]: value === '' ? '' : Number(value),
-    // }));
     setInput(name, value);
   };
 
   const classes = useStyles();
   const { inputs } = props;
-  console.log('inputs: ', inputs);
   return (
     <div>
       <Paper className={classes.DCFClass}>

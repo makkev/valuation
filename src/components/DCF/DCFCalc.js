@@ -45,8 +45,6 @@ const calcFCF = (n, freeCashFlow, conservativeGrowthRate, growthDeclineRate, dis
  * @param {number} discountRate
  * @returns {array} NPV
  */
-const calcNPV = (FCF, discountRate) => FCF.map((fcf, i) => (fcf / ((1 + discountRate) ** (i + 1))));
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -75,15 +73,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function DCFCalc(props) {
-  const [valIn5, setValIn10] = useState(0);
-  const [presentVal, setPresentVal] = useState(0);
+  const [companyVal, setCompanyVal] = useState(0);
   const [val, setVal] = useState([]);
-  // const [NPV, setNPV] = useState([]);
   const [totalNPV, setTotalNPV] = useState(0);
   const [year10FCF, setYear10FCF] = useState(0);
-
-  // console.log(val[9].npv);
-
 
   const classes = useStyles();
 
@@ -92,7 +85,7 @@ export default function DCFCalc(props) {
       totalCash,
       totalDebt,
       freeCashFlow,
-      // sharesOutstanding,
+      sharesOutstanding,
       expectedGrowthRate,
       marginOfSafety,
       conservativeGrowthRate,
@@ -109,21 +102,27 @@ export default function DCFCalc(props) {
   useEffect(() => {
     setVal(calcFCF(10, freeCashFlow, conservativeGrowthRate,
       growthDeclineRate, discountRate));
-    // setNPV(calcNPV(val, discountRate));
-    setTotalNPV(val.reduce((total, n) => total + n.npv, 0));
   }, [
     freeCashFlow,
     conservativeGrowthRate,
     growthDeclineRate,
     discountRate,
+    totalCash,
+    valuationLastFCF,
   ]);
 
-  // useEffect(() => {
-  //   setInputs((prevInputs) => ({
-  //     ...prevInputs,
-  //     conservativeGrowthRate: expectedGrowthRate * (1 - marginOfSafety),
-  //   }));
-  // }, [expectedGrowthRate, marginOfSafety, setInputs]);
+  useEffect(() => {
+    setTotalNPV(val.reduce((total, n) => total + n.npv, 0));
+  }, [val]);
+
+  useEffect(() => {
+    if (val.length >= 10) setYear10FCF(val[9].npv * valuationLastFCF);
+  }, [val, valuationLastFCF]);
+
+  useEffect(() => {
+    setCompanyVal((totalNPV + year10FCF + totalCash - totalDebt));
+  }, [totalNPV, year10FCF, totalCash, totalDebt]);
+
   useEffect(() => {
     setInput('conservativeGrowthRate', expectedGrowthRate * (1 - marginOfSafety));
   }, [expectedGrowthRate, marginOfSafety]);
@@ -131,7 +130,7 @@ export default function DCFCalc(props) {
   return (
     <div className={classes.root}>
       {/* <div> */}
-      <DisplayVal presentVal={presentVal} />
+      <DisplayVal presentVal={companyVal / sharesOutstanding} />
       <Paper className={classes.mainPaper}>
         <Typography component="p">
           Calculation
@@ -166,7 +165,6 @@ export default function DCFCalc(props) {
           </Grid>
           <Grid item xs={6}>
             <Typography className={classes.alignRight}>
-              {/* {(val.reduce((total, n) => total + n.npv, 0)).toFixed(2)} */}
               {totalNPV.toFixed(2)}
             </Typography>
           </Grid>
@@ -178,7 +176,8 @@ export default function DCFCalc(props) {
           </Grid>
           <Grid item xs={6}>
             <Typography className={classes.alignRight}>
-              {val.length >= 10 && (val[9].npv * valuationLastFCF).toFixed(2)}
+              {/* {val.length >= 10 && (val[9].npv * valuationLastFCF).toFixed(2)} */}
+              {year10FCF.toFixed(2)}
             </Typography>
           </Grid>
 
@@ -211,7 +210,7 @@ export default function DCFCalc(props) {
           </Grid>
           <Grid item xs={6}>
             <Typography className={classes.alignRight}>
-              {presentVal.toFixed(2)}
+              {companyVal.toFixed(2)}
             </Typography>
           </Grid>
         </Grid>
