@@ -8,7 +8,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
-import PriceEarningMultipleVal from './PriceEarningMultipleVal';
+import DisplayVal from '../Common/DisplayVal';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -100,7 +100,8 @@ export default function PriceEarningMultipleCalc(props) {
   return (
     <div className={classes.root}>
       {/* <div> */}
-      <PriceEarningMultipleVal presentVal={presentVal} />
+      {/* <PriceEarningMultipleVal presentVal={presentVal} /> */}
+      <DisplayVal presentVal={presentVal} />
       <Paper className={classes.mainPaper}>
         <Typography component="p">
           Calculation

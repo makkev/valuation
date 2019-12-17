@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import PriceEarningMultiple from '../PriceEarningMultiple/PriceEarningMultiple';
 import DCF from '../DCF/DCF';
+import ROE from '../ROE/ROE';
 
 const DEFAULT_TAB = 1;
 
@@ -74,7 +75,7 @@ export default function SimpleTabs() {
         <DCF />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        ROE Valuation
+        <ROE />
       </TabPanel>
     </div>
   );

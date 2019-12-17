@@ -22,8 +22,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const delay = (t) => new Promise((resolve) => { setTimeout(() => resolve('wait...'), t); });
-
+const delay = (t) => new Promise((resolve) => {
+  setTimeout(() => resolve('wait...'), t);
+});
 
 const DisplayVal = (props) => {
   const { presentVal } = props;

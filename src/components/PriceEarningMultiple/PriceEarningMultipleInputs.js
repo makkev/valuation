@@ -30,22 +30,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
 function PriceEarningMultipleInputs(props) {
   const handleChange = (e) => {
-    console.log('e: ', e);
     const { target: { value, name } } = e;
     const { setInputs } = props;
 
-    // setInputs((prevInputs) => ({
-    //   ...prevInputs,
-    //   [name]: value === '' ? '' : Number(value),
-    // }));
-    setInputs(name, value);
+    if (value) {
+      setInputs(name, value);
+    } else {
+      setInputs(name, 0);
+    }
   };
 
   const classes = useStyles();
   const { inputs } = props;
-  console.log('inputs: ', inputs);
+
   return (
     <div>
       <Paper className={classes.priceEarningSec}>

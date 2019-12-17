@@ -35,7 +35,11 @@ function DCFInputs(props) {
     const { target: { value, name } } = e;
     const { setInput } = props;
 
-    setInput(name, value);
+    if (value) {
+      setInput(name, value);
+    } else {
+      setInput(name, 0);
+    }
   };
 
   const classes = useStyles();
@@ -152,6 +156,7 @@ function DCFInputs(props) {
         {/* Conservative growth rate */}
         <div>
           <TextField
+            disabled
             id="standard-number"
             label="Conservative growth rate"
             value={inputs.conservativeGrowthRate}
@@ -163,6 +168,7 @@ function DCFInputs(props) {
               shrink: true,
             }}
             margin="normal"
+            variant="filled"
           />
         </div>
 
