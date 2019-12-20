@@ -11,15 +11,6 @@ import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 import DisplayVal from '../Common/DisplayVal';
 
-
-/**
- * TODO: delete not needed
- * Calculates NPV given an array of FCFs
- * @param {array} FCF
- * @param {number} discountRate
- * @returns {array} NPV
- */
-
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '70%',
@@ -86,11 +77,12 @@ const setInitVal = (n) => {
 };
 
 export default function DCFCalc(props) {
-  const [companyVal, setCompanyVal] = useState(0);
-  // const [val, setVal] = useState(setInitVal(YEARS));
   const [val, setVal] = useState([]);
-  const [totalNPV, setTotalNPV] = useState(0);
-  const [year10FCF, setYear10FCF] = useState(0);
+  const [yr10NetIncome, setYr10NetIncome] = useState(0);
+  const [requiredVal, setRequiredVal] = useState(0);
+  const [NPVRequiredVal, setNPVRequiredVal] = useState(0);
+  const [NPVDividends, setNPVDividends] = useState(0);
+  const [intrinsicVal, setIntrinsicVal] = useState(0);
 
   const classes = useStyles();
 
@@ -101,12 +93,9 @@ export default function DCFCalc(props) {
       ROE,
       sharesOutstanding,
       dividendYield,
-      dividendPayoutRatio,
-      marginOfSafety,
       conservativeGrowthRate,
       discountRate,
     },
-    setInput,
   } = props;
 
 
@@ -115,10 +104,28 @@ export default function DCFCalc(props) {
       price, dividendYield, discountRate));
   }, [shareholdersEquity, conservativeGrowthRate, sharesOutstanding]);
 
+  useEffect(() => {
+    if (val.length >= YEARS) {
+      const lastNetIncome = val[YEARS - 1].yearlyHoldersEq * ROE;
+      setYr10NetIncome(lastNetIncome);
+
+      const reqVal = lastNetIncome / discountRate;
+      setRequiredVal(reqVal);
+
+      const npvReqVal = reqVal / ((1 + discountRate) ** YEARS);
+      setNPVRequiredVal(npvReqVal);
+
+      const totalNpvDiv = val.reduce((sum, val) => sum + val.yearlyNPVDiv, 0);
+      setNPVDividends(totalNpvDiv);
+
+      setIntrinsicVal(npvReqVal + totalNpvDiv);
+    }
+  }, [val, ROE, discountRate]);
+
   return (
     <div className={classes.root}>
       {/* <div> */}
-      <DisplayVal presentVal={companyVal / sharesOutstanding} />
+      <DisplayVal presentVal={intrinsicVal} />
       <Paper className={classes.mainPaper}>
         <Typography component="p">
           Calculations (per share)
@@ -155,7 +162,7 @@ export default function DCFCalc(props) {
           </Grid>
           <Grid item xs={6}>
             <Typography className={classes.alignRight}>
-              {/* {totalNPV.toFixed(2)} */}
+              {yr10NetIncome.toFixed(2)}
             </Typography>
           </Grid>
 
@@ -166,8 +173,7 @@ export default function DCFCalc(props) {
           </Grid>
           <Grid item xs={6}>
             <Typography className={classes.alignRight}>
-              {/* {val.length >= 10 && (val[9].npv * valuationLastFCF).toFixed(2)} */}
-              {/* {year10FCF.toFixed(2)} */}
+              {requiredVal.toFixed(2)}
             </Typography>
           </Grid>
           <p />
@@ -179,7 +185,7 @@ export default function DCFCalc(props) {
           </Grid>
           <Grid item xs={6}>
             <Typography className={classes.alignRight}>
-              {/* {totalCash.toFixed(2)} */}
+              {NPVRequiredVal.toFixed(2)}
             </Typography>
           </Grid>
 
@@ -190,7 +196,7 @@ export default function DCFCalc(props) {
           </Grid>
           <Grid item xs={6}>
             <Typography className={classes.alignRight}>
-              {/* {totalDebt.toFixed(2)} */}
+              {NPVDividends.toFixed(2)}
             </Typography>
           </Grid>
 
@@ -201,7 +207,7 @@ export default function DCFCalc(props) {
           </Grid>
           <Grid item xs={6}>
             <Typography className={classes.alignRight}>
-              {/* {companyVal.toFixed(2)} */}
+              {intrinsicVal.toFixed(2)}
             </Typography>
           </Grid>
         </Grid>
@@ -222,5 +228,4 @@ DCFCalc.propTypes = {
     conservativeGrowthRate: PropTypes.number.isRequired,
     discountRate: PropTypes.number.isRequired,
   }).isRequired,
-  setInput: PropTypes.func.isRequired,
 };
