@@ -49,7 +49,7 @@ function ROEInputs(props) {
     {
       label: 'Shareholders equity',
       value: inputs.shareholdersEquity,
-      name: 'shareHoldersEquity',
+      name: 'shareholdersEquity',
     },
     {
       label: 'Price',

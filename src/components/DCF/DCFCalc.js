@@ -11,6 +11,8 @@ import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 import DisplayVal from '../Common/DisplayVal';
 
+const YEARS = 10;
+
 /**
  * Calculates FCF for n number of years
  * @param {number} n
@@ -22,7 +24,7 @@ import DisplayVal from '../Common/DisplayVal';
 const calcFCF = (n, freeCashFlow, conservativeGrowthRate, growthDeclineRate, discountRate) => {
   const calcVal = [];
   let v = 0;
-  for (let i = 0; i < 10; i += 1) {
+  for (let i = 0; i < n; i += 1) {
     if (i === 0) {
       v = freeCashFlow * (1 + conservativeGrowthRate);
     } else {
@@ -76,6 +78,7 @@ export default function DCFCalc(props) {
   const [companyVal, setCompanyVal] = useState(0);
   const [val, setVal] = useState([]);
   const [totalNPV, setTotalNPV] = useState(0);
+  // TODO: consider renaming year10FCF - remove 10
   const [year10FCF, setYear10FCF] = useState(0);
 
   const classes = useStyles();
@@ -100,7 +103,7 @@ export default function DCFCalc(props) {
    * Calculate FCF
    */
   useEffect(() => {
-    setVal(calcFCF(10, freeCashFlow, conservativeGrowthRate,
+    setVal(calcFCF(YEARS, freeCashFlow, conservativeGrowthRate,
       growthDeclineRate, discountRate));
   }, [
     freeCashFlow,
@@ -116,7 +119,7 @@ export default function DCFCalc(props) {
   }, [val]);
 
   useEffect(() => {
-    if (val.length >= 10) setYear10FCF(val[9].npv * valuationLastFCF);
+    if (val.length >= YEARS) setYear10FCF(val[9].npv * valuationLastFCF);
   }, [val, valuationLastFCF]);
 
   useEffect(() => {
@@ -171,7 +174,7 @@ export default function DCFCalc(props) {
 
           <Grid item xs={6}>
             <Typography className={classes.alignRight}>
-              Year 10 FCF value
+              {`Year ${YEARS} FCF value`}
             </Typography>
           </Grid>
           <Grid item xs={6}>

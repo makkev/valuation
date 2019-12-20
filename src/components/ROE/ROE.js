@@ -4,7 +4,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import { useSelector, useDispatch } from 'react-redux';
 import ROEInputs from './ROEInputs';
-// import ROECalc from './ROECalc';
+import ROECalc from './ROECalc';
 import { setInput as setIn } from './actions';
 
 const useStyles = makeStyles((theme) => ({
@@ -45,10 +45,10 @@ function ROE() {
           inputs={inputs}
           setInput={setInput}
         />
-        {/* <ROECalc
+        <ROECalc
           inputs={inputs}
           setInput={setInput}
-        /> */}
+        />
       </Grid>
     </div>
   );

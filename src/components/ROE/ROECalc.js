@@ -11,32 +11,6 @@ import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 import DisplayVal from '../Common/DisplayVal';
 
-/**
- * Calculates FCF for n number of years
- * @param {number} n
- * @param {number} freeCashFlow
- * @param {number} conservativeGrowthRate
- * @param {number} growthDeclineRate
- * @return {array} calcVal
- */
-const calcFCF = (n, freeCashFlow, conservativeGrowthRate, growthDeclineRate, discountRate) => {
-  const calcVal = [];
-  let v = 0;
-  for (let i = 0; i < 10; i += 1) {
-    if (i === 0) {
-      v = freeCashFlow * (1 + conservativeGrowthRate);
-    } else {
-      v = calcVal[i - 1].fcf
-        * ((1 + (conservativeGrowthRate * ((1 - growthDeclineRate) ** i))));
-    }
-    calcVal.push({
-      year: i + 1,
-      fcf: v,
-      npv: v / ((1 + discountRate) ** (i + 1)),
-    });
-  }
-  return calcVal;
-};
 
 /**
  * TODO: delete not needed
@@ -72,6 +46,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const YEARS = 10;
+
+const calcVal = (n, shareholdersEquity, conservativeGrowthRate, sharesOutstanding) => {
+  const val = [];
+  let holdersEq = 0;
+  for (let i = 0; i < n; i += 1) {
+    if (i === 0) {
+      holdersEq = (shareholdersEquity * (1 + conservativeGrowthRate)) / sharesOutstanding;
+    } else {
+      holdersEq = val[i - 1].holdersEq * (1 + conservativeGrowthRate);
+    }
+    val.push({
+      year: i + 1,
+      holdersEq,
+    });
+  }
+  return val;
+};
+
 export default function DCFCalc(props) {
   const [companyVal, setCompanyVal] = useState(0);
   const [val, setVal] = useState([]);
@@ -82,50 +75,22 @@ export default function DCFCalc(props) {
 
   const {
     inputs: {
-      totalCash,
-      totalDebt,
-      freeCashFlow,
+      shareholdersEquity,
+      price,
+      ROE,
       sharesOutstanding,
-      expectedGrowthRate,
+      dividendYield,
+      dividendPayoutRatio,
       marginOfSafety,
       conservativeGrowthRate,
-      growthDeclineRate,
       discountRate,
-      valuationLastFCF,
     },
     setInput,
   } = props;
 
-  /**
-   * Calculate FCF
-   */
   useEffect(() => {
-    setVal(calcFCF(10, freeCashFlow, conservativeGrowthRate,
-      growthDeclineRate, discountRate));
-  }, [
-    freeCashFlow,
-    conservativeGrowthRate,
-    growthDeclineRate,
-    discountRate,
-    totalCash,
-    valuationLastFCF,
-  ]);
-
-  useEffect(() => {
-    setTotalNPV(val.reduce((total, n) => total + n.npv, 0));
-  }, [val]);
-
-  useEffect(() => {
-    if (val.length >= 10) setYear10FCF(val[9].npv * valuationLastFCF);
-  }, [val, valuationLastFCF]);
-
-  useEffect(() => {
-    setCompanyVal((totalNPV + year10FCF + totalCash - totalDebt));
-  }, [totalNPV, year10FCF, totalCash, totalDebt]);
-
-  useEffect(() => {
-    setInput('conservativeGrowthRate', expectedGrowthRate * (1 - marginOfSafety));
-  }, [expectedGrowthRate, marginOfSafety]);
+    setVal(calcVal(YEARS, shareholdersEquity, conservativeGrowthRate, sharesOutstanding));
+  }, [shareholdersEquity, conservativeGrowthRate, sharesOutstanding]);
 
   return (
     <div className={classes.root}>
@@ -133,14 +98,14 @@ export default function DCFCalc(props) {
       <DisplayVal presentVal={companyVal / sharesOutstanding} />
       <Paper className={classes.mainPaper}>
         <Typography component="p">
-          Calculation
+          Calculations (per share)
         </Typography>
         <Paper className={classes.tablePaper}>
           <Table className={classes.table} size="small">
             <TableHead>
               <TableRow>
                 <TableCell className={classes.yearCol} align="right">Year</TableCell>
-                <TableCell align="right">FCF * Growth rate</TableCell>
+                <TableCell align="right">Shareholders equity</TableCell>
                 <TableCell align="right">NPV FCF</TableCell>
               </TableRow>
             </TableHead>
@@ -148,8 +113,9 @@ export default function DCFCalc(props) {
               {val.map((v) => (
                 <TableRow key={v.year}>
                   <TableCell align="right">{v.year}</TableCell>
-                  <TableCell align="right">{v.fcf.toFixed(2)}</TableCell>
-                  <TableCell align="right">{v.npv.toFixed(2)}</TableCell>
+                  <TableCell align="right">{v.holdersEq.toFixed(2)}</TableCell>
+                  {/* <TableCell align="right">{v.npv.toFixed(2)}</TableCell> */}
+                  <TableCell align="right">0</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -160,57 +126,58 @@ export default function DCFCalc(props) {
 
           <Grid item xs={6}>
             <Typography className={classes.alignRight}>
-              {'Total NPV FVF: '}
+              {'Year 10 net income: '}
             </Typography>
           </Grid>
           <Grid item xs={6}>
             <Typography className={classes.alignRight}>
-              {totalNPV.toFixed(2)}
+              {/* {totalNPV.toFixed(2)} */}
             </Typography>
           </Grid>
 
           <Grid item xs={6}>
             <Typography className={classes.alignRight}>
-              Year 10 FCF value
+              {'Required value: '}
             </Typography>
           </Grid>
           <Grid item xs={6}>
             <Typography className={classes.alignRight}>
               {/* {val.length >= 10 && (val[9].npv * valuationLastFCF).toFixed(2)} */}
-              {year10FCF.toFixed(2)}
+              {/* {year10FCF.toFixed(2)} */}
+            </Typography>
+          </Grid>
+          <p />
+          <p />
+          <Grid item xs={6}>
+            <Typography className={classes.alignRight}>
+              {'NPV required value: '}
+            </Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography className={classes.alignRight}>
+              {/* {totalCash.toFixed(2)} */}
             </Typography>
           </Grid>
 
           <Grid item xs={6}>
             <Typography className={classes.alignRight}>
-              {'Cash on Hand: '}
+              {'NPV dividends: '}
             </Typography>
           </Grid>
           <Grid item xs={6}>
             <Typography className={classes.alignRight}>
-              {totalCash.toFixed(2)}
-            </Typography>
-          </Grid>
-
-          <Grid item xs={6}>
-            <Typography className={classes.alignRight}>
-              {'Total Debt: '}
-            </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <Typography className={classes.alignRight}>
-              {totalDebt.toFixed(2)}
+              {/* {totalDebt.toFixed(2)} */}
             </Typography>
           </Grid>
 
           <Grid item xs={6}>
             <Typography className={classes.alignRight}>
-              {'Company value: '}
+              {'Intrinsic value: '}
             </Typography>
           </Grid>
           <Grid item xs={6}>
             <Typography className={classes.alignRight}>
-              {companyVal.toFixed(2)}
+              {/* {companyVal.toFixed(2)} */}
             </Typography>
           </Grid>
         </Grid>
@@ -221,16 +188,15 @@ export default function DCFCalc(props) {
 
 DCFCalc.propTypes = {
   inputs: PropTypes.shape({
-    totalCash: PropTypes.number.isRequired,
-    totalDebt: PropTypes.number.isRequired,
-    freeCashFlow: PropTypes.number.isRequired,
+    shareholdersEquity: PropTypes.number.isRequired,
+    price: PropTypes.number.isRequired,
+    ROE: PropTypes.number.isRequired,
     sharesOutstanding: PropTypes.number.isRequired,
-    expectedGrowthRate: PropTypes.number.isRequired,
+    dividendYield: PropTypes.number.isRequired,
+    dividendPayoutRatio: PropTypes.number.isRequired,
     marginOfSafety: PropTypes.number.isRequired,
     conservativeGrowthRate: PropTypes.number.isRequired,
-    growthDeclineRate: PropTypes.number.isRequired,
     discountRate: PropTypes.number.isRequired,
-    valuationLastFCF: PropTypes.number.isRequired,
   }).isRequired,
   setInput: PropTypes.func.isRequired,
 };

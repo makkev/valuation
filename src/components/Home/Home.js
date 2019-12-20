@@ -10,7 +10,7 @@ import PriceEarningMultiple from '../PriceEarningMultiple/PriceEarningMultiple';
 import DCF from '../DCF/DCF';
 import ROE from '../ROE/ROE';
 
-const DEFAULT_TAB = 1;
+const DEFAULT_TAB = 2;
 
 function TabPanel(props) {
   const {
