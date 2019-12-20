@@ -22,17 +22,17 @@ import DisplayVal from '../Common/DisplayVal';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '40%',
+    width: '70%',
   },
   mainPaper: {
-    padding: theme.spacing(1, 2, 3),
+    padding: theme.spacing(1, 1, 1),
     marginTop: theme.spacing(1),
     marginRight: theme.spacing(2),
   },
   tablePaper: {
     margin: theme.spacing(2, 2, 3, 2),
     // marginTop: theme.spacing(1),
-    width: '90%',
+    width: '80%',
     overflowX: 'auto',
     // marginBottom: theme.spacing(3),
   },
@@ -48,18 +48,38 @@ const useStyles = makeStyles((theme) => ({
 
 const YEARS = 10;
 
-const calcVal = (n, shareholdersEquity, conservativeGrowthRate, sharesOutstanding) => {
+const calcVal = (n, shareholdersEquity, conservativeGrowthRate, sharesOutstanding,
+  price, dividendYield, discountRate) => {
+  let yearlyHoldersEq = 0;
+  let yearlyDiv = 0;
+  let yearlyNPVDiv = 0;
   const val = [];
-  let holdersEq = 0;
   for (let i = 0; i < n; i += 1) {
     if (i === 0) {
-      holdersEq = (shareholdersEquity * (1 + conservativeGrowthRate)) / sharesOutstanding;
+      yearlyHoldersEq = (shareholdersEquity * (1 + conservativeGrowthRate)) / sharesOutstanding;
+      yearlyDiv = (price * dividendYield) * (1 + conservativeGrowthRate);
     } else {
-      holdersEq = val[i - 1].holdersEq * (1 + conservativeGrowthRate);
+      yearlyHoldersEq = val[i - 1].yearlyHoldersEq * (1 + conservativeGrowthRate);
+      yearlyDiv = val[i - 1].yearlyDiv * (1 + conservativeGrowthRate);
     }
+    yearlyNPVDiv = yearlyDiv / ((1 + discountRate) ** i);
     val.push({
       year: i + 1,
-      holdersEq,
+      yearlyHoldersEq,
+      yearlyDiv,
+      yearlyNPVDiv,
+    });
+  }
+  return val;
+};
+
+const setInitVal = (n) => {
+  const val = [];
+  for (let i = 0; i < n; i += 1) {
+    val.push({
+      year: i + 1,
+      yearlyHoldersEq: 0,
+      yearlyNPVdiv: 0,
     });
   }
   return val;
@@ -67,6 +87,7 @@ const calcVal = (n, shareholdersEquity, conservativeGrowthRate, sharesOutstandin
 
 export default function DCFCalc(props) {
   const [companyVal, setCompanyVal] = useState(0);
+  // const [val, setVal] = useState(setInitVal(YEARS));
   const [val, setVal] = useState([]);
   const [totalNPV, setTotalNPV] = useState(0);
   const [year10FCF, setYear10FCF] = useState(0);
@@ -88,8 +109,10 @@ export default function DCFCalc(props) {
     setInput,
   } = props;
 
+
   useEffect(() => {
-    setVal(calcVal(YEARS, shareholdersEquity, conservativeGrowthRate, sharesOutstanding));
+    setVal(calcVal(YEARS, shareholdersEquity, conservativeGrowthRate, sharesOutstanding,
+      price, dividendYield, discountRate));
   }, [shareholdersEquity, conservativeGrowthRate, sharesOutstanding]);
 
   return (
@@ -106,16 +129,17 @@ export default function DCFCalc(props) {
               <TableRow>
                 <TableCell className={classes.yearCol} align="right">Year</TableCell>
                 <TableCell align="right">Shareholders equity</TableCell>
-                <TableCell align="right">NPV FCF</TableCell>
+                <TableCell align="right">Dividend</TableCell>
+                <TableCell align="right">NPV dividends</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {val.map((v) => (
                 <TableRow key={v.year}>
                   <TableCell align="right">{v.year}</TableCell>
-                  <TableCell align="right">{v.holdersEq.toFixed(2)}</TableCell>
-                  {/* <TableCell align="right">{v.npv.toFixed(2)}</TableCell> */}
-                  <TableCell align="right">0</TableCell>
+                  <TableCell align="right">{v.yearlyHoldersEq.toFixed(2)}</TableCell>
+                  <TableCell align="right">{v.yearlyDiv.toFixed(2)}</TableCell>
+                  <TableCell align="right">{v.yearlyNPVDiv.toFixed(2)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
