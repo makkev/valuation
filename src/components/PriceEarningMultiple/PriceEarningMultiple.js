@@ -6,23 +6,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import PriceEarningMultipleInputs from './PriceEarningMultipleInputs';
 import PriceEarningMultipleCalc from './PriceEarningMultipleCalc';
 import { setInput } from './actions';
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  heading: {
-    marginLeft: theme.spacing(3),
-  },
-  body: {
-    marginLeft: theme.spacing(3),
-  },
-}));
-
+import { PriceEarningMultipleStyles } from './PriceEarningMultiple.styles';
 
 function PriceEarningMultiple() {
-  const classes = useStyles();
-  const inputs = useSelector((state) => state.priceEarningMultiple.inputs);
+  // const PriceEarningMultipleStyle = usePriceEarningMultipleStyles();
+  const inputs = useSelector(state => state.priceEarningMultiple.inputs);
   const dispatch = useDispatch();
 
   const setInputs = (name, value) => {
@@ -40,8 +28,12 @@ function PriceEarningMultiple() {
   // });
 
   return (
-    <div className={classes.root}>
-      <Typography variant="h5" component="h3" className={classes.heading}>
+    <div className={PriceEarningMultipleStyles.root}>
+      <Typography
+        variant="h5"
+        component="h3"
+        className={PriceEarningMultipleStyles.heading}
+      >
         Price Earning Multiple
       </Typography>
       <Grid
@@ -49,16 +41,10 @@ function PriceEarningMultiple() {
         direction="row"
         justify="flex-start"
         alignItems="flex-start"
-        className={classes.body}
+        className={PriceEarningMultipleStyles.body}
       >
-        <PriceEarningMultipleInputs
-          inputs={inputs}
-          setInputs={setInputs}
-        />
-        <PriceEarningMultipleCalc
-          inputs={inputs}
-          setInputs={setInputs}
-        />
+        <PriceEarningMultipleInputs inputs={inputs} setInputs={setInputs} />
+        <PriceEarningMultipleCalc inputs={inputs} setInputs={setInputs} />
       </Grid>
     </div>
   );
